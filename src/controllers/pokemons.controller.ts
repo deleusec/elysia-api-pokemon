@@ -1,8 +1,8 @@
 import { Elysia, t } from "elysia";
 import Pokemon, { IPokemon } from '../entities/pokemon.schema';
 
-export const pokemonsController = new Elysia().group("/pokemon", app => 
-  app.get('/get', async ({ set }) => {
+export const pokemonsController = new Elysia()
+  .get('/get', async ({ set }) => {
     try {
         const pokemons = await Pokemon.find({});
         return pokemons;
