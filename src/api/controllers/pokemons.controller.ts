@@ -2,7 +2,7 @@ import { Elysia, t } from "elysia";
 import Pokemon, { IPokemon } from '../entities/pokemon.schema';
 
 export const pokemonsController = new Elysia()
-  .get('/get', async ({ set }) => {
+  .get('/', async ({ set }) => {
     try {
         const pokemons = await Pokemon.find({});
         return pokemons;
@@ -75,8 +75,11 @@ export const pokemonsController = new Elysia()
       console.log(handler.body);
   
       await Pokemon.findOneAndUpdate({ pokemonId : id}, handler.body)
-
+      return {
+        message: 'Resources are successfully updated',
+        status: 200,
+      };
     } catch (e:any) {
-
+      
     }
   })
