@@ -1,6 +1,7 @@
 import { Document, Schema, model } from 'mongoose';
 
 export interface IPokemon extends Document {
+  pokemonId: Number;
   name: string;
   type: string;
   level: number;
@@ -8,6 +9,11 @@ export interface IPokemon extends Document {
 
 const schema = new Schema<IPokemon>(
     {
+      pokemonId: {
+        type: Number,
+        required: true,
+        unique: true
+      },
       name: {
         type: String,
         required: true,

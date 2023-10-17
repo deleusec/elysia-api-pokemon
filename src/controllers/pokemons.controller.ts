@@ -17,6 +17,7 @@ export const pokemonsController = new Elysia()
 
   .guard({
     body: t.Object({
+        pokemonId: t.Number(),
         name: t.String(),
         type: t.String(),
         level: t.Number()
@@ -25,6 +26,7 @@ export const pokemonsController = new Elysia()
   .post('/create',async (handler)=>{
     try {
       const newPokemon = new Pokemon();
+      newPokemon.pokemonId = handler.body.pokemonId;
       newPokemon.name = handler.body.name;
       newPokemon.type = handler.body.type;
       newPokemon.level = handler.body.level;
