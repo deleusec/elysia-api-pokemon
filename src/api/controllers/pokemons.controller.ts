@@ -82,4 +82,20 @@ export const pokemonsController = new Elysia()
     } catch (e:any) {
       
     }
+
+    
+  })
+  .put("/change/:id", async (handler)=> {
+    try {
+      const { id } = handler.params;
+      console.log(handler.body);
+  
+      await Pokemon.findOneAndReplace({ pokemonId : id}, handler.body)
+      return {
+        message: 'Resources are successfully updated',
+        status: 200,
+      };
+    } catch (e:any) {
+      
+    } 
   })
