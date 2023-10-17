@@ -35,30 +35,48 @@ export const pokemonsController = new Elysia()
       
       handler.set.status = 201;
       return newPokemon;
-    } catch (e) {
+    } catch (e:any) {
+      // If unique mongoose constraint (for username or email) is violated
+      if (e.name === 'MongoServerError' && e.code === 11000) {
+        handler.set.status = 422;
+        return {
+          message: 'Resource already exists!',
+          status: 422,
+        };
+      }
 
+      handler.set.status = 500;
+      return {
+        message: 'Unable to save entry to the database!',
+        status: 500,
+      };
     }
   })
   )
-)
+  .delete("/delete/:id", async (handler)=>{
+      try {
+        const { id } = handler.params;
+        await Pokemon.findOneAndDelete({ pokemonId : id });
+        return {
+          message: `Resource deleted successfully!`,
+          status: 200,
+        };
+      } catch (e:any) {
+        handler.set.status = 500;
+        return {
+          message: 'Unable to delete resource!',
+          status: 500,
+        };
+      }
+  })
+  .patch("/update/:id", async (handler)=> {
+    try {
+      const { id } = handler.params;
+      console.log(handler.body);
+  
+      await Pokemon.findOneAndUpdate({ pokemonId : id}, handler.body)
 
+    } catch (e:any) {
 
-
-/*    app.group("/pokemons", (app: Elysia) => {
-        app
-        app.get('/get', async ({ set }: Elysia.Set) => {
-
-            try {
-                const pokemons = await Pokemon.find({});
-                return pokemons;
-              } catch (e: unknown) {
-                set.status = 500;
-                return {
-                  message: 'Unable to retrieve items from the database!',
-                  status: 500,
-                };
-              }
-        
-        })
-   // }) 
-}*/
+    }
+  })
