@@ -14,6 +14,18 @@ export const pokemonsController = new Elysia()
         };
       }
   })
+  .get("/:id", async (handler)=> {
+    try {
+      const { id } = handler.params;
+      
+      const pokemon =  await Pokemon.find({ pokemonId : id}).exec();
+
+      return pokemon[0]
+    } catch (e:any) {
+      
+    } 
+  })
+
 
   .guard({
     body: t.Object({
