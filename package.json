@@ -13,7 +13,8 @@
     "@elysiajs/swagger": "^0.7.3",
     "elysia": "latest",
     "elysia-helmet": "^1.0.1",
-    "mongoose": "^7.6.2"
+    "mongoose": "^7.6.2",
+    "pug": "^3.0.2"
   },
   "devDependencies": {
     "bun-types": "latest"

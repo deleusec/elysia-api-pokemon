@@ -3,6 +3,8 @@ import { Elysia, t } from "elysia";
 import { swagger } from '@elysiajs/swagger';
 import { cors } from '@elysiajs/cors';
 import { helmet } from 'elysia-helmet';
+import { html } from '@elysiajs/html';
+const pug = require('pug');
 // Import database connect
 import "./config/database/db";
 // Import routes 
@@ -28,17 +30,18 @@ app.use(
 app.use(cors())
 app.use(helmet())
 // Routes
-app.get("/", (res)=> {
-  const welcome = "Welcome in Elysia ! 🦊"
-  console.log(res);
+app.use(html())
+app.get("/", ()=> {
+  const welcome =  "Welcome in Elysia ! 🦊\nAdd /api in the url"
   
-  return Bun.file("./public/index.html")
+  const compiledFunction = pug.compileFile('./src/views/template.pug');
+  return compiledFunction({welcome: welcome})
 })
 app.group("/api", app => 
   app.use(pokemons)
   .use(users)
 )
 // Start server
-app.listen( process.env.PORT??3000 ,()=>
+app.listen( process.env.PORT??8080 ,()=>
   console.log(`🦊 Elysia is running at http://${app.server?.hostname}:${app.server?.port}`)
 );
