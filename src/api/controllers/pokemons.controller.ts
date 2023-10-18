@@ -72,7 +72,6 @@ export const pokemonsController = new Elysia()
   .patch("/update/:id", async (handler)=> {
     try {
       const { id } = handler.params;
-      console.log(handler.body);
   
       await Pokemon.findOneAndUpdate({ pokemonId : id}, handler.body)
       return {

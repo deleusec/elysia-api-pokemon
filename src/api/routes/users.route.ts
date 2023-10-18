@@ -1,6 +1,6 @@
-import { Elysia, t } from "elysia";
+import { createElysia } from "../../utils/createElysia";
 import { usersController } from "../controllers/users.controller";
 
-export const users = new Elysia().group('/users', app => 
+export const users = createElysia().group('/users', app => 
     app.use(usersController)
 )

@@ -1,6 +1,6 @@
-import { Elysia, t } from "elysia";
+import { createElysia } from "../../utils/createElysia";
 import { pokemonsController } from "../controllers/pokemons.controller";
 
-export const pokemons = new Elysia().group('/pokemons', app => 
+export const pokemons = createElysia().group('/pokemons', app => 
     app.use(pokemonsController)
 )
