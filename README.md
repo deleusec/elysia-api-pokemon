@@ -42,14 +42,18 @@ bun run dev
 bun run test
 ```
 
+### `MongoDB`
+
+Pour utiliser l'application, vous devez avoir une base de données MongoDB. 
+
 ### `.env.local`
 
 Créez un fichier `.env.local` à la racine du projet et modifiez les variables d'environnement suivantes avec vos propres valeurs :
 
 ```
 PORT=3000
-MONGO_URI=mongodb://localhost:27017/elysiajs
-JWT_SECRET=secret
+MONGO_URI="mongodb://localhost:27017/elysiajs"
+JWT_SECRET="your_secret"
 ```
 
 ## Utiliser l'API
