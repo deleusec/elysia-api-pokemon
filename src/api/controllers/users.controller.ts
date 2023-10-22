@@ -1,5 +1,6 @@
 import { Elysia, t } from "elysia";
 import User, { IUser } from '../entities/user.schema';
+import isAuth from "../../middleware/authMiddleware";
 import cookie from "@elysiajs/cookie";
 import jwt from "@elysiajs/jwt";
 
@@ -13,27 +14,28 @@ export const usersController = new Elysia()
     )
     // Get all users
     .get('/', async ({ set, cookie, jwt }) => {
-        try {
-            const auth = await jwt.verify(cookie.token.value);
-            
-            if(!auth) {
-                return "Unauthorized !";
-            }
-
-            const users = await User.find({});
-            set.status = 200;
-            return users;
-        } catch (error) {
-            return "error"+error
-        }
-    })
+        const users = await User.find({});
+        set.status = 200;
+        return users;
+    }, { beforeHandle : isAuth})
+    // Get me
+    .get('/me', async ({ set, cookie, jwt }) => {
+        const {id}:any = await jwt.verify(cookie.token.value);
+        
+        const user = await User.find({_id: id});
+        
+        set.status = 200;
+        return user[0];
+    }, { beforeHandle : isAuth})
     // Logout
     .get("/logout", async ({ set, cookie }) => {    
         try {
             cookie.token.remove()
+            set.status = 200;
             return "You are logged out !";
         } catch (error) {
-            return "error"+error
+            set.status = 500;
+            return error
         }
     })
     // Guard    
@@ -46,7 +48,7 @@ export const usersController = new Elysia()
     }, app => app
     .use(cookie())
     // Login
-    .post('/login', async ({set, body, jwt,setCookie}) => {
+    .post('/login', async ({set, body, jwt, setCookie}) => {
         try {
             const user = await User.findOne({email: body.email}, body.email)
             const userProfile = await User.findById(user);
@@ -54,6 +56,7 @@ export const usersController = new Elysia()
             const isMatch = await Bun.password.verify(body.password, userProfile?.password as string);
 
             if(!isMatch) {
+                set.status = 401;
                 return "Wrong password !";
             }
 
@@ -63,16 +66,20 @@ export const usersController = new Elysia()
               };
             set.status = 201;
             setCookie('token', token, {httpOnly: true});
+
+            set.status = 200;
             return "You are logged in !";
             
         } catch (error) {
-            return "error"+error
+            set.status = 500;
+            return error
         }
     })
     // Register
     .post('/register', async ({set,body, jwt, setCookie}) => {
         try {
             const newUser = new User();
+
             const { username, email, password } = body;
             newUser.username = username;
             newUser.email = email;
@@ -84,13 +91,13 @@ export const usersController = new Elysia()
             set.headers = {
                 'X-Authorization': token,
               };
-            set.status = 201;
             setCookie('token', token, {httpOnly: true});
 
-
+            set.status = 200;
             return newUser;
         } catch (error) {
-            return "error"+error
+            set.status = 500;
+            return error
         }
     })
     )

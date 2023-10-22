@@ -1,10 +1,13 @@
 import { Elysia, t } from "elysia";
 import Pokemon, { IPokemon } from '../entities/pokemon.schema';
+import isAuth from "../../middleware/authMiddleware";
+import { set } from "mongoose";
 
 export const pokemonsController = new Elysia()
   .get('/', async ({ set }) => {
     try {
         const pokemons = await Pokemon.find({});
+        set.status = 200;
         return pokemons;
       } catch (e: unknown) {
         set.status = 500;
@@ -13,16 +16,18 @@ export const pokemonsController = new Elysia()
           status: 500,
         };
       }
-  })
-  .get("/:id", async (handler)=> {
+  }, { beforeHandle : isAuth})
+  .get("/:id", async ({set, params})=> {
     try {
-      const { id } = handler.params;
+      const { id } = params;
       
       const pokemon =  await Pokemon.find({ pokemonId : id}).exec();
 
+      set.status = 200;
       return pokemon[0]
-    } catch (e:any) {
-      
+    } catch (error) {
+      set.status = 500;
+      return error
     } 
   })
 
@@ -35,29 +40,29 @@ export const pokemonsController = new Elysia()
         level: t.Number()
     })
   }, app => app
-  .post('/create',async (handler)=>{
+  .post('/create',async ({body,set})=>{
     try {
       const newPokemon = new Pokemon();
-      newPokemon.pokemonId = handler.body.pokemonId;
-      newPokemon.name = handler.body.name;
-      newPokemon.type = handler.body.type;
-      newPokemon.level = handler.body.level;
+      newPokemon.pokemonId = body.pokemonId;
+      newPokemon.name = body.name;
+      newPokemon.type = body.type;
+      newPokemon.level = body.level;
 
-      const savedUser = await newPokemon.save();
+      const savedPokemon = await newPokemon.save();
       
-      handler.set.status = 201;
-      return newPokemon;
-    } catch (e:any) {
+      set.status = 201;
+      return savedPokemon;
+    } catch (error:any) {
       // If unique mongoose constraint (for username or email) is violated
-      if (e.name === 'MongoServerError' && e.code === 11000) {
-        handler.set.status = 422;
+      if (error.name === 'MongoServerError' && error.code === 11000) {
+        set.status = 422;
         return {
           message: 'Resource already exists!',
           status: 422,
         };
       }
 
-      handler.set.status = 500;
+      set.status = 500;
       return {
         message: 'Unable to save entry to the database!',
         status: 500,
@@ -65,48 +70,60 @@ export const pokemonsController = new Elysia()
     }
   })
   )
-  .delete("/delete/:id", async (handler)=>{
+  .delete("/delete/:id", async ({set,params})=>{
       try {
-        const { id } = handler.params;
+        const { id } = params;
         await Pokemon.findOneAndDelete({ pokemonId : id });
+        set.status = 200;
         return {
           message: `Resource deleted successfully!`,
           status: 200,
         };
       } catch (e:any) {
-        handler.set.status = 500;
+        set.status = 500;
         return {
           message: 'Unable to delete resource!',
           status: 500,
         };
       }
   })
-  .patch("/update/:id", async (handler)=> {
+  .patch("/update/:id", async ({set,params,body})=> {
     try {
-      const { id } = handler.params;
+      const { id } = params;
   
-      await Pokemon.findOneAndUpdate({ pokemonId : id}, handler.body)
+      await Pokemon.findOneAndUpdate({ pokemonId : id}, body)
+      set.status = 200;
       return {
         message: 'Resources are successfully updated',
         status: 200,
       };
     } catch (e:any) {
-      
+      set.status = 500;
+      return {
+        message: 'Unable to update resource!',
+        status: 500,
+      };
     }
 
     
   })
-  .put("/change/:id", async (handler)=> {
+  .put("/change/:id", async ({set,params,body})=> {
     try {
-      const { id } = handler.params;
-      console.log(handler.body);
+      const { id } = params;
+      console.log(body);
   
-      await Pokemon.findOneAndReplace({ pokemonId : id}, handler.body)
+      await Pokemon.findOneAndReplace({ pokemonId : id}, body)
+      set.status = 200;
       return {
         message: 'Resources are successfully updated',
         status: 200,
       };
     } catch (e:any) {
+      set.status = 500;
+      return {
+        message: 'Unable to update resource!',
+        status: 500,
+      };
       
     } 
   })
