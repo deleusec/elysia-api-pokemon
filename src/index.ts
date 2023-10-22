@@ -4,7 +4,6 @@ import { swagger } from '@elysiajs/swagger';
 import { cors } from '@elysiajs/cors';
 import { helmet } from 'elysia-helmet';
 import { html } from '@elysiajs/html';
-const pug = require('pug');
 // Import database connect
 import "./config/database/db";
 // Import routes 
@@ -31,12 +30,7 @@ app.use(cors())
 app.use(helmet())
 // Routes
 app.use(html())
-app.get("/", ()=> {
-  const welcome =  "Welcome in Elysia ! 🦊\nAdd /api in the url"
-  
-  const compiledFunction = pug.compileFile('./src/views/template.pug');
-  return compiledFunction({welcome: welcome})
-})
+app.get("/", ()=> "Welcome in Elysia ! 🦊\nAdd /api in the url")
 app.group("/api", app => 
   app.use(pokemons)
   .use(users)
