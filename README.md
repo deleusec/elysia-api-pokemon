@@ -42,6 +42,16 @@ bun run dev
 bun run test
 ```
 
+### `.env.local`
+
+Créez un fichier `.env.local` à la racine du projet et modifiez les variables d'environnement suivantes avec vos propres valeurs :
+
+```
+PORT=3000
+MONGO_URI=mongodb://localhost:27017/elysiajs
+JWT_SECRET=secret
+```
+
 ## Utiliser l'API
 
 ### `Swagger`
