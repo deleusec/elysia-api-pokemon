@@ -52,12 +52,12 @@ Une fois l'application lancée, vous pouvez accéder à la documentation Swagger
 
 | Route | Méthode | Description | Protégée |
 | --- | --- | --- | --- |
-| /api/pokemons | GET | Récupère la liste des pokémons | ✅ |
+| /api/pokemons | GET | Récupère la liste des pokémons |  
 | /api/pokemons/:id | GET | Récupère un pokémon par son id |
 | /api/pokemons/create | POST | Crée un nouveau pokémon |
 | /api/pokemons/change/:id | PUT | Met à jour un pokémon |
 | /api/pokemons/delete/:id | DELETE | Supprime un pokémon |
-| /api/pokemons/update/:id | PATCH | Met à jour un ou plusieurs élément(s) d'un pokémon |
+| /api/pokemons/update/:id | PATCH | Met à jour un ou plusieurs élément(s) d'un pokémon | ✅ |
 | /api/users | GET | Récupère la liste des utilisateurs | ✅ |
 | /api/users/me | GET | Récupère les données de l'utilisateur connecté | ✅ |
 | /api/users/register | POST | Crée un nouvel utilisateur |

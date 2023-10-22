@@ -16,7 +16,7 @@ export const pokemonsController = new Elysia()
           status: 500,
         };
       }
-  }, { beforeHandle : isAuth})
+  })
   .get("/:id", async ({set, params})=> {
     try {
       const { id } = params;
@@ -106,7 +106,7 @@ export const pokemonsController = new Elysia()
     }
 
     
-  })
+  } , { beforeHandle : isAuth})
   .put("/change/:id", async ({set,params,body})=> {
     try {
       const { id } = params;
