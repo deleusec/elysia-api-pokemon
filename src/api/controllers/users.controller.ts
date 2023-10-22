@@ -65,7 +65,7 @@ export const usersController = new Elysia()
                 'X-Authorization': token,
               };
             set.status = 201;
-            setCookie('token', token, {httpOnly: true});
+            setCookie('token', token, {httpOnly: true,  expires: new Date(Date.now() + 1000 * 60 * 60 * 24 ) });// 1 day
 
             set.status = 200;
             return "You are logged in !";
@@ -91,7 +91,7 @@ export const usersController = new Elysia()
             set.headers = {
                 'X-Authorization': token,
               };
-            setCookie('token', token, {httpOnly: true});
+            setCookie('token', token, {httpOnly: true, expires: new Date(Date.now() + 1000 * 60 * 60 * 24 )}); // 1 day
 
             set.status = 200;
             return newUser;
